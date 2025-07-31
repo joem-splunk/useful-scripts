@@ -140,7 +140,13 @@ processors:
 
 exporters:
   # Traces
-  otlphttp:
+  otlphttp/old_environment:
+    traces_endpoint: "${SPLUNK_INGEST_URL}/v2/trace/otlp"
+    headers:
+      "X-SF-Token": "${SPLUNK_ACCESS_TOKEN}"
+    auth:
+      authenticator: headers_setter
+  otlphttp/new_environment:
     traces_endpoint: "${SPLUNK_INGEST_URL}/v2/trace/otlp"
     headers:
       "X-SF-Token": "${SPLUNK_ACCESS_TOKEN}"
@@ -206,7 +212,7 @@ service:
       - batch
       - resourcedetection
       #- resource/add_environment
-      exporters: [otlphttp, signalfx/old_environment, signalfx/new_environment]
+      exporters: [otlphttp/old_environment, otlphttp/new_environment, signalfx/old_environment, signalfx/new_environment]
       # Use instead when sending to gateway
       #exporters: [otlp/gateway, signalfx]
     metrics:
